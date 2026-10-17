@@ -1,0 +1,24 @@
+{
+  "info": {
+    "name": "Competition Management API",
+    "_postman_id": "a1d2e3f4-1234-4567-8910-abcdef123456",
+    "description": "Базовые запросы для демонстрации REST API. Сначала зарегистрируйтесь или войдите.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key":"baseUrl","value":"http://localhost:3000"},
+    {"key":"token","value":""},
+    {"key":"competitionId","value":"1"},
+    {"key":"stageId","value":"1"},
+    {"key":"participantId","value":"1"}
+  ],
+  "item": [
+    {"name":"Health check","request":{"method":"GET","url":"{{baseUrl}}/api/health"}},
+    {"name":"Register participant","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"fullName\":\"Тестовый Пользователь\",\"email\":\"test@example.com\",\"password\":\"StrongPass123\"}"},"url":"{{baseUrl}}/api/auth/register"},"event":[{"listen":"test","script":{"exec":["if (pm.response.code === 201) { pm.collectionVariables.set('token', pm.response.json().data.token); }"]}}]},
+    {"name":"Login","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"email\":\"test@example.com\",\"password\":\"StrongPass123\"}"},"url":"{{baseUrl}}/api/auth/login"},"event":[{"listen":"test","script":{"exec":["if (pm.response.code === 200) { pm.collectionVariables.set('token', pm.response.json().data.token); }"]}}]},
+    {"name":"Current user","request":{"method":"GET","header":[{"key":"Authorization","value":"Bearer {{token}}"}],"url":"{{baseUrl}}/api/auth/me"}},
+    {"name":"List participants","request":{"method":"GET","header":[{"key":"Authorization","value":"Bearer {{token}}"}],"url":"{{baseUrl}}/api/participants?sort=points_desc"}},
+    {"name":"Invalid registration (validation error 400)","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"fullName\":\"x\",\"email\":\"not-an-email\",\"password\":\"123\"}"},"url":"{{baseUrl}}/api/auth/register"}},
+    {"name":"Ranking","request":{"method":"GET","header":[{"key":"Authorization","value":"Bearer {{token}}"}],"url":"{{baseUrl}}/api/competitions/{{competitionId}}/ranking"}}
+  ]
+}
